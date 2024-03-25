@@ -38,6 +38,11 @@ d. Cari purchase date dan amount (quantity) dari nama adriaens <br />
 	echo "$adriaens"
     	
     	`
+### SOAL 2
+
+ #register.sh
+a. Buatlah 2 program yaitu login.sh dan register.sh
+b. Setiap admin maupun user harus melakukan register terlebih dahulu menggunakan email, username, pertanyaan keamanan dan jawaban, dan password
 
 ### SOAL 3
 ```sh
