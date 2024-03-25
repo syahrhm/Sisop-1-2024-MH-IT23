@@ -38,13 +38,13 @@ d. Cari purchase date dan amount (quantity) dari nama adriaens <br />
 	echo "$adriaens"
     	
     	`
-###SOAL 2
+### SOAL 2
 
-#register.sh
+## register.sh
 
 #!/bin/bash
 
-# Function to check if email is already registered
+#Function to check if email is already registered
 function check_email() {
   local email="$1"
   if grep -q "^$email:" users.txt; then
@@ -55,13 +55,13 @@ function check_email() {
 }
 Fungsi ini bertujuan untuk memeriksa apakah email yang dimasukkan telah terdaftar, mengecek apakah email tersebut sudah ada dalam file users.txt, serta mengembalikan nilai 0 jika email ditemukan, dan 1 jika tidak ditemukan.
 
-# Function to encrypt password 
+#Function to encrypt password 
 function encrypt_password() {
   echo -n "$1" | base64
 }
 Fungsi ini bertujuan untuk mengenkripsi password menggunakan base64, menerima satu parameter, yaitu password yang ingin dienkripsi, menggunakan perintah base64 untuk melakukan enkripsi.
 
-# Function to register a new user account
+#Function to register a new user account
 function register() {
   local email="$1"
   local username="$2"
@@ -70,12 +70,12 @@ function register() {
   local password="$5"
   local user_type="user"
 
-# Check for "admin" in email and set admin flag
+#Check for "admin" in email and set admin flag
     if [[ "$email" == admin ]]; then
         user_type="admin"
     fi
 
-# Check if email is already registered
+#Check if email is already registered
   check_email "$email"
   if [ $? -eq 0 ]; then
     echo "[ $(date +'%d/%m/%Y %H:%M:%S') ] [REGISTER FAILED>  Email $email already registered." >&2
@@ -83,7 +83,7 @@ function register() {
     exit 1
   fi
 
-# Validate password 
+#Validate password 
   while true; do 
     read -s -p "Enter password: " password
     echo
@@ -95,10 +95,10 @@ function register() {
     fi
   done
 
-  # Encrypt password
+  #Encrypt password
   local encrypted_password=$(encrypt_password "$password")
 
-  # Write user data to users.txt with admin flag
+  #Write user data to users.txt with admin flag
   echo "$email:$username:$security_question:$security_answer:$encrypted_password:$user_type" >> users.txt
 
   if [[ $user_type == "admin" ]]; then
@@ -119,8 +119,8 @@ Jika email mengandung kata "admin", maka pengguna akan ditetapkan sebagai admin.
 Mencatat keberhasilan registrasi ke dalam file auth.log.
 Memberikan pesan keberhasilan registrasi kepada pengguna.
 
-# Main script 
-# Create users.txt if it doesnt exist
+#Main script 
+#Create users.txt if it doesnt exist
 touch users.txt # add this line to create the file if it doesnt exist
 echo "User Registration"
 read -p "Enter email: " email
@@ -129,14 +129,18 @@ read -p "Enter security question: " security_question
 read -p "Enter security answer: " security_answer
 read -sp "Password: " password
 echo
+
+#Call the register function to complete registration
+register "$email" "$username" "$security_question" "$security_answer" "$password"
+
 Membuat file users.txt jika belum ada lalu Meminta pengguna untuk memasukkan data registrasi, termasuk email, username, pertanyaan keamanan, jawaban keamanan, dan password.
 dan akhirnya memanggil fungsi register() untuk menyelesaikan proses registrasi.
 
-#login.sh
+## login.sh
 
 #!/bin/bash
 
-# Function to display the login  menu
+#Function to display the login  menu
 function show_login_menu() {
     echo "Welcome to Login System"
     echo "1. Login"
@@ -156,7 +160,7 @@ function show_login_menu() {
 }
 Fungsi ini bertujuan untuk menampilkan menu login lalu memberikan pilihan untuk login atau lupa password dan akan membaca input dari pengguna untuk memilih opsi. lalu memanggil fungsi login() jika pengguna memilih untuk login, atau forgot_password() jika pengguna memilih lupa password.
 
-# Function to perform the login process
+#Function to perform the login process
 function login() {
     read -p "Enter email: " email
     read -s -p "Enter password: " password
@@ -205,7 +209,7 @@ Fungsi ini bertujuan untuk melakukan proses login pengguna, meminta pengguna unt
 Jika pengguna tidak ditemukan, maka akan ditampilkan pesan kesalahan dan memanggil kembali menu login lalu mengambil password terenkripsi dari data pengguna dan mendekripsi menggunakan base64 dan akan membandingkan password yang dimasukkan oleh pengguna dengan password yang terenkripsi.
 Jika password cocok, memeriksa apakah pengguna adalah admin atau bukan. Jika admin, memanggil admin_menu(), jika tidak, menampilkan pesan selamat datang.
 
-# Function to handle forgot password
+#Function to handle forgot password
 function forgot_password() {
     read -p "Enter email: " email
     
@@ -249,7 +253,7 @@ Fungsi ini bertujuan untuk menangani lupa password dan akan meminta pengguna unt
 Jika pengguna tidak ditemukan, menampilkan pesan kesalahan dan memanggil kembali menu login dan mengambil pertanyaan keamanan yang terkait dengan email tersebut setelah itu eminta pengguna untuk menjawab pertanyaan keamanan. Membandingkan jawaban yang diberikan dengan jawaban yang tersimpan.
 Jika jawaban benar, akan menampilkan password pengguna.
 
-# Function to display the admin menu
+#Function to display the admin menu
 function admin_menu() {
     local email="$1"
     while true; do
@@ -284,14 +288,11 @@ function admin_menu() {
    done
 }
 
-# start the login menu
+#start the login menu
 show_login_menu
 
 Fungsi ini bertujuan untuk menampilkan menu admin setelah login lalu memberikan pilihan untuk menambahkan, mengedit, atau menghapus pengguna, serta logout dan akan membaca input dari pengguna untuk memilih opsi setelah ituemanggil fungsi yang sesuai dengan pilihan yang dibuat.
 Memanggil show_login_menu() untuk memulai proses login.
-
-# Call the register function to complete registration
-register "$email" "$username" "$security_question" "$security_answer" "$password"
 
 ### SOAL 3
 ```sh
