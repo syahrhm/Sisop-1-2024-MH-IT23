@@ -9,19 +9,15 @@ unzip genshin_character.zip
 Kita perlu mendownload file zip dari link yang sudah disediakan lalu melakukan unzip terhadap file-file yang telah didownload
 ```sh
 cd genshin_character
-ls | while read -r filename ; do
-	decrypted=$(echo "$filename" | xxd -r -p)
-	cd ..
-	attributes=$(grep "$decrypted" list_character.csv | sed 's/^[[:space:]]*//;s/[[:space:]]*$//')
-	cd genshin_character
-	attributes=$(echo "$attributes" | cut -d ',' -f 2-)
-	elements=$(echo "$attributes" | cut -d ',' -f 2-| tr ',' '_')
-	regions=$(echo "$attributes" | cut -d ',' -f 1)
-	new_filename="${regions}_${decrypted}_${elements}"
-	mv "$filename" "$new_filename.jpg"
-	directory="/home/ubuntu/sisop/genshin_character/$regions/"
-	mkdir -p "$regions"
-	mv "$new_filename.jpg" "$regions/" 
+for filename in *; do
+    decrypted=$(echo "$filename" | xxd -r -p)
+    cd ..
+    char_attributes=$(grep "$decrypted" ../list_character.csv | sed 's/^[[:space:]]*//;s/[[:space:]]*$//')
+    cd genshin_character
+    char_regions=$(echo "$char_attributes" | cut -d ',' -f 1)
+    char_elements=$(echo "$char_attributes" | cut -d ',' -f 3 | tr ',' '_')
+    newfilename="${char_regions}_${decrypted}_${char_elements}"
+    mv "$filename" "$char_regions/$newfilename.jpg"
 done
 ```
 Nama dari karakter-karakter yang didapat tersebut dalam kondisi ter-enkripsi dengan base64, maka dilakukan dekripsi dengan memasukkan hasil dekripsi ke variabel decrypted kemudian dilakukan rename nama ‘new file’ menjadi isi dari variabel ‘decrypted'
