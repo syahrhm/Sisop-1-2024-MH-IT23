@@ -3,19 +3,15 @@ wget 'https://drive.google.com/uc?export=download&id=1oGHdTf4_76_RacfmQIV4i7os4s
 unzip genshin.zip
 unzip genshin_character.zip 
 cd genshin_character
-ls | while read -r filename ; do
-	decrypted=$(echo "$filename" | xxd -r -p)
-	cd ..
-	attributes=$(grep "$decrypted" list_character.csv | sed 's/^[[:space:]]*//;s/[[:space:]]*$//')
-	cd genshin_character
-	attributes=$(echo "$attributes" | cut -d ',' -f 2-)
-	elements=$(echo "$attributes" | cut -d ',' -f 2-| tr ',' '_')
-	regions=$(echo "$attributes" | cut -d ',' -f 1)
-	new_filename="${regions}_${decrypted}_${elements}"
-	mv "$filename" "$new_filename.jpg"
-	directory="/home/ubuntu/sisop/genshin_character/$regions/"
-	mkdir -p "$regions"
-	mv "$new_filename.jpg" "$regions/" 
+for filename in *; do
+    decrypted=$(echo "$filename" | xxd -r -p)
+    cd ..
+    attributes=$(grep "$decrypted" ../list_character.csv | sed 's/^[[:space:]]*//;s/[[:space:]]*$//')
+    cd genshin_character
+    regions=$(echo "$attributes" | cut -d ',' -f 1)
+    elements=$(echo "$attributes" | cut -d ',' -f 3 | tr ',' '_')
+    new_filename="${regions}_${decrypted}_${elements}"
+    mv "$filename" "$regions/$new_filename.jpg"
 done
 
 cd ..
