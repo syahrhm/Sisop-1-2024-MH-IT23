@@ -6,12 +6,12 @@ cd genshin_character
 for filename in *; do
     decrypted=$(echo "$filename" | xxd -r -p)
     cd ..
-    attributes=$(grep "$decrypted" ../list_character.csv | sed 's/^[[:space:]]*//;s/[[:space:]]*$//')
+    char_attributes=$(grep "$decrypted" ../list_character.csv | sed 's/^[[:space:]]*//;s/[[:space:]]*$//')
     cd genshin_character
-    regions=$(echo "$attributes" | cut -d ',' -f 1)
-    elements=$(echo "$attributes" | cut -d ',' -f 3 | tr ',' '_')
-    new_filename="${regions}_${decrypted}_${elements}"
-    mv "$filename" "$regions/$new_filename.jpg"
+    char_regions=$(echo "$char_attributes" | cut -d ',' -f 1)
+    char_elements=$(echo "$char_attributes" | cut -d ',' -f 3 | tr ',' '_')
+    newfilename="${char_regions}_${decrypted}_${char_elements}"
+    mv "$filename" "$char_regions/$newfilename.jpg"
 done
 
 cd ..
