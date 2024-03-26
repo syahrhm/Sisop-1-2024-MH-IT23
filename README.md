@@ -304,15 +304,19 @@ unzip genshin_character.zip
 Kita perlu mendownload file zip dari link yang sudah disediakan lalu melakukan unzip terhadap file-file yang telah didownload
 ```sh
 cd genshin_character
-for filename in *; do
-    decrypted=$(echo "$filename" | xxd -r -p)
-    cd ..
-    char_attributes=$(grep "$decrypted" ../list_character.csv | sed 's/^[[:space:]]*//;s/[[:space:]]*$//')
-    cd genshin_character
-    char_regions=$(echo "$char_attributes" | cut -d ',' -f 1)
-    char_elements=$(echo "$char_attributes" | cut -d ',' -f 3 | tr ',' '_')
-    newfilename="${char_regions}_${decrypted}_${char_elements}"
-    mv "$filename" "$char_regions/$newfilename.jpg"
+ls | while read -r filename ; do
+        decrypted=$(echo "$filename" | xxd -r -p)
+        cd ..
+        char_atr=$(grep "$decrypted" list_character.csv | sed 's/^[[:space:]]//;s/[[:space:]]$//')
+        cd genshin_character
+        char_atr=$(echo "$char_atr" | cut -d ',' -f 2-)
+        char_elements=$(echo "$char_atr" | cut -d ',' -f 2-| tr ',' '_')
+        char_regions=$(echo "$char_atr" | cut -d ',' -f 1)
+        newfilename="${char_regions}_${decrypted}_${char_elements}"
+        mv "$filename" "${newfilename}.jpg"
+        directory="/home/ubuntu/sisop/genshin_character/$char_regions/"
+        mkdir -p "$char_regions"
+        mv "${newfilename}.jpg" "$char_regions/" 
 done
 ```
 Nama dari karakter-karakter yang didapat tersebut dalam kondisi ter-enkripsi dengan base64, maka dilakukan dekripsi dengan memasukkan hasil dekripsi ke variabel decrypted kemudian dilakukan rename nama ‘new file’ menjadi isi dari variabel ‘decrypted'
@@ -320,10 +324,10 @@ Setelah mendapatkan nama asli dari setiap karakter, cek file 'list_character.csv
 ```sh
 cd ..
 
-echo "JUMLAH SETIAP JENIS SENJATA"
+echo "JUMLAH JENIS SENJATA"
 
-tail -n +2 list_character.csv | awk -F ',' '{print $4}' | sed 's/^[[:space:]]*//;s/[[:space:]]*$//' |  sort | uniq -c | while read -r count word; do
-	echo "$word : $count"
+tail -n +2 list_character.csv | awk -F ',' '{print $4}' | sed 's/^[[:space:]]//;s/[[:space:]]$//' |  sort | uniq -c | while read -r count word; do
+        echo "$word : $count"
 done 
 
 rm genshin_character.zip genshin.zip list_character.csv
