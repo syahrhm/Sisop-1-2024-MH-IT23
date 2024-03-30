@@ -1,4 +1,121 @@
 # Sisop-1-2024-MH-IT23
+
+## Anggota Kelompok
+
+| NRP        | Nama                            |
+|:----------:|:-------------------------------:|
+| 5027231020 | Acintya Edria Sudarsono         |
+| 5027231044 | Dionisius Marcell Putra Indranto|
+| 5027231072 | Aisyah Rahmasari                |
+
+- [Peraturan](#peraturan) 
+- [Soal](#soal)
+- [Detail Tambahan](#detail-tambahan)
+- [Penjelasan](#penjelasan)
+  - [Soal 1](#soal-1)
+  - [Soal 2](#soal-2)
+  - [Soal 3](#soal-3)
+  - [Soal 4](#soal-4)
+ 
+## Peraturan
+1. Waktu pengerjaan dimulai hari Rabu (20 Maret 2024) setelah sesi lab hingga hari Senin (25 Maret 2024) pukul 23.59 WIB.
+2. Praktikan diharapkan membuat laporan penjelasan dan penyelesaian soal dalam bentuk Readme(github).
+3. Format nama repository github “Sisop-[Nomor Modul]-2024-[Kode Dosen Kelas]-[Nama Kelompok]” (contoh:Sisop-1-2024-MH-IT01).
+4. Struktur repository seperti berikut:
+	- soal_1:
+		- sandbox.sh
+	- soal_2:
+		- login.sh
+		- register.sh
+	- soal_3:
+		- awal.sh
+		- search.sh
+	- soal_4:
+		- aggregate_minutes_to_hourly_log.sh
+		- minute_log.sh
+Jika melanggar struktur repo akan dianggap sama dengan curang dan menerima konsekuensi sama dengan melakukan kecurangan.
+5. Setelah pengerjaan selesai, semua script bash, awk, dan file yang berisi cron job ditaruh di github masing - masing kelompok, dan link github diletakkan pada form yang disediakan. Pastikan github di setting ke publik.
+6. Commit terakhir maksimal 10 menit setelah waktu pengerjaan berakhir. Jika melewati maka akan dinilai berdasarkan commit terakhir.
+7. Jika tidak ada pengumuman perubahan soal oleh asisten, maka soal dianggap dapat diselesaikan.
+8. Jika ditemukan soal yang tidak dapat diselesaikan, harap menuliskannya pada Readme beserta permasalahan yang ditemukan.
+9. Praktikan tidak diperbolehkan menanyakan jawaban dari soal yang diberikan kepada asisten maupun praktikan dari kelompok lainnya.
+10. Jika ditemukan indikasi kecurangan dalam bentuk apapun di pengerjaan soal shift, maka nilai dianggap 0.
+11. Pengerjaan soal shift sesuai dengan modul yang telah diajarkan.
+12. Zip dari repository dikirim ke email asisten penguji dengan subjek yang sama dengan nama judul repository, dikirim sebelum deadline dari soal shift.
+13. Jika terdapat revisi soal akan dituliskan pada halaman terakhir.
+
+## Soal
+
+1. Cipung dan abe ingin mendirikan sebuah toko bernama “SandBox”, sedangkan kamu adalah manajer penjualan yang ditunjuk oleh Cipung dan Abe untuk melakukan pelaporan penjualan dan strategi penjualan kedepannya yang akan dilakukan.
+
+Setiap tahun Cipung dan Abe akan mengadakan rapat dengan kamu untuk mengetahui laporan dan strategi penjualan dari “SandBox”. Buatlah beberapa kesimpulan dari data penjualan “Sandbox.csv” untuk diberikan ke cipung dan abe 
+
+- Karena Cipung dan Abe baik hati, mereka ingin memberikan hadiah kepada customer yang telah belanja banyak. Tampilkan nama pembeli dengan total sales paling tinggi
+- Karena karena Cipung dan Abe ingin mengefisienkan penjualannya, mereka ingin merencanakan strategi penjualan untuk customer segment yang memiliki profit paling kecil. 
+Tampilkan customer segment yang memiliki profit paling kecil
+- Cipung dan Abe hanya akan membeli stok barang yang menghasilkan profit paling tinggi agar efisien. Tampilkan 3 category yang memiliki total profit paling tinggi 
+- Karena ada seseorang yang lapor kepada Cipung dan Abe bahwa pesanannya tidak kunjung sampai, maka mereka ingin mengecek apakah pesanan itu ada. Cari purchase date dan amount (quantity) dari nama adriaens
+
+2. Oppie merupakan seorang peneliti bom atom, ia ingin merekrut banyak peneliti lain untuk mengerjakan proyek bom atom nya, Oppie memiliki racikan bom atom rahasia yang hanya bisa diakses penelitinya yang akan diidentifikasi sebagai user, Oppie juga memiliki admin yang bertugas untuk memanajemen peneliti,  bantulah oppie untuk membuat program yang akan memudahkan tugasnya
+- Buatlah 2 program yaitu login.sh dan register.sh
+- Setiap admin maupun user harus melakukan register terlebih dahulu menggunakan email, username, pertanyaan keamanan dan jawaban, dan password
+- Username yang dibuat bebas, namun email bersifat unique. setiap email yang mengandung kata admin akan dikategorikan menjadi admin 
+- Karena resep bom atom ini sangat rahasia Oppie ingin password nya memuat keamanan tingkat tinggi
+  	- Password tersebut harus di encrypt menggunakan base64
+	- Password yang dibuat harus lebih dari 8 karakter
+	- Harus terdapat paling sedikit 1 huruf kapital dan 1 huruf kecil
+	- Harus terdapat paling sedikit 1 angka 
+- Karena Oppie akan memiliki banyak peneliti dan admin ia berniat untuk menyimpan seluruh data register yang ia lakukan ke dalam folder users file users.txt. Di dalam file tersebut, terdapat catatan seluruh email, username, pertanyaan keamanan dan jawaban, dan password hash yang telah ia buat.
+- Setelah melakukan register, program harus bisa melakukan login. Login hanya perlu dilakukan menggunakan email dan password.
+- Karena peneliti yang di rekrut oleh Oppie banyak yang sudah tua dan pelupa maka Oppie ingin ketika login akan ada pilihan lupa password dan akan keluar pertanyaan keamanan dan ketika dijawab dengan benar bisa memunculkan password
+- Setelah user melakukan login akan keluar pesan sukses, namun setelah seorang admin melakukan login Oppie ingin agar admin bisa menambah, mengedit (username, pertanyaan keamanan dan jawaban, dan password), dan menghapus user untuk memudahkan kerjanya sebagai admin. 
+- Ketika admin ingin melakukan edit atau hapus user, maka akan keluar input email untuk identifikasi user yang akan di hapus atau di edit
+- Oppie ingin programnya tercatat dengan baik, maka buatlah agar program bisa mencatat seluruh log ke dalam folder users file auth.log, baik login ataupun register.
+  	- Format: [date] [type] [message]
+	- Type: REGISTER SUCCESS, REGISTER FAILED, LOGIN SUCCESS, LOGIN FAILED
+	- Ex:
+	  	- [23/09/17 13:18:02] [REGISTER SUCCESS] user [username] registered successfully
+		- [23/09/17 13:22:41] [LOGIN FAILED] ERROR Failed login attempt on user with email [email]
+3. Alyss adalah seorang gamer yang sangat menyukai bermain game Genshin Impact. Karena hobinya, dia ingin mengoleksi foto-foto karakter Genshin Impact. Suatu saat Yanuar memberikannya sebuah Link yang berisi koleksi kumpulan foto karakter dan sebuah clue yang mengarah ke penemuan gambar rahasia. Ternyata setiap nama file telah dienkripsi dengan menggunakan hexadecimal. Karena penasaran dengan apa yang dikatakan Yanuar, Alyss tidak menyerah dan mencoba untuk mengembalikan nama file tersebut kembali seperti semula.
+- Alyss membuat script bernama awal.sh, untuk download file yang diberikan oleh Yanuar dan unzip terhadap file yang telah diunduh dan decode setiap nama file yang terenkripsi dengan hex . Karena pada file list_character.csv terdapat data lengkap karakter, Alyss ingin merename setiap file berdasarkan file tersebut. Agar semakin rapi, Alyss mengumpulkan setiap file ke dalam folder berdasarkan region tiap karakter
+	- Format: Region - Nama - Elemen - Senjata.jpg
+- Karena tidak mengetahui jumlah pengguna dari tiap senjata yang ada di folder "genshin_character".Alyss berniat untuk menghitung serta menampilkan jumlah pengguna untuk setiap senjata yang ada
+   	- Format: [Nama Senjata] : [jumlah]
+   	  Untuk menghemat penyimpanan. Alyss menghapus file - file yang tidak ia gunakan, yaitu genshin_character.zip, list_character.csv, dan genshin.zip
+- Namun sampai titik ini Alyss masih belum menemukan clue dari the secret picture yang disinggung oleh Yanuar. Dia berpikir keras untuk menemukan pesan tersembunyi tersebut. Alyss membuat script baru bernama search.sh untuk melakukan pengecekan terhadap setiap file tiap 1 detik. Pengecekan dilakukan dengan cara meng-ekstrak sebuah value dari setiap gambar dengan menggunakan command steghide. Dalam setiap gambar tersebut, terdapat sebuah file txt yang berisi string. Alyss kemudian mulai melakukan dekripsi dengan hex pada tiap file txt dan mendapatkan sebuah url. Setelah mendapatkan url yang ia cari, Alyss akan langsung menghentikan program search.sh serta mendownload file berdasarkan url yang didapatkan.
+- Dalam prosesnya, setiap kali Alyss melakukan ekstraksi dan ternyata hasil ekstraksi bukan yang ia inginkan, maka ia akan langsung menghapus file txt tersebut. Namun, jika itu merupakan file txt yang dicari, maka ia akan menyimpan hasil dekripsi-nya bukan hasil ekstraksi. Selain itu juga, Alyss melakukan pencatatan log pada file image.log untuk setiap pengecekan gambar
+	- Format: [date] [type] [image_path]
+   	- Ex:
+   	  	- [24/03/20 17:18:19] [NOT FOUND] [image_path]
+   	  	- [24/03/20 17:18:20] [FOUND] [image_path]
+- Hasil akhir:
+	- genshin_character
+	- search.sh
+	- awal.sh
+	- image.log
+	- [filename].txt
+	- [image].jpg
+4. Stitch sangat senang dengan PC di rumahnya. Suatu hari, PC nya secara tiba-tiba nge-freeze 🤯 Tentu saja, Stitch adalah seorang streamer yang harus setiap hari harus bermain game dan streaming.  Akhirnya, dia membawa PC nya ke tukang servis untuk diperbaiki. Setelah selesai diperbaiki, ternyata biaya perbaikan sangat mahal sehingga dia harus menggunakan uang hasil tabungan nya untuk membayarnya. Menurut tukang servis, masalahnya adalah pada CPU dan GPU yang overload karena gaming dan streaming sehingga mengakibatkan freeze pada PC nya. Agar masalah ini tidak terulang kembali, Stitch meminta kamu untuk membuat sebuah program monitoring resource yang tersedia pada komputer.
+Buatlah program monitoring resource pada PC kalian. Cukup monitoring ram dan monitoring size suatu directory. Untuk ram gunakan command `free -m`. Untuk disk gunakan command `du -sh <target_path>`. Catat semua metrics yang didapatkan dari hasil `free -m`. Untuk hasil `du -sh <target_path>` catat size dari path directory tersebut. Untuk target_path yang akan dimonitor adalah /home/{user}/.
+- Masukkan semua metrics ke dalam suatu file log bernama metrics_{YmdHms}.log. {YmdHms} adalah waktu disaat file script bash kalian dijalankan. Misal dijalankan pada 2024-03-20 15:00:00, maka file log yang akan tergenerate adalah metrics_20240320150000.log.
+- Script untuk mencatat metrics diatas diharapkan dapat berjalan otomatis pada setiap menit.
+- Kemudian, buat satu script untuk membuat agregasi file log ke satuan jam. Script agregasi akan memiliki info dari file-file yang tergenerate tiap menit. Dalam hasil file agregasi tersebut, terdapat nilai minimum, maximum, dan rata-rata dari tiap-tiap metrics. File agregasi akan ditrigger untuk dijalankan setiap jam secara otomatis. Berikut contoh nama file hasil agregasi metrics_agg_2024032015.log dengan format metrics_agg_{YmdH}.log
+- Karena file log bersifat sensitif pastikan semua file log hanya dapat dibaca oleh user pemilik file.
+Note:
+- Nama file untuk script per menit adalah minute_log.sh
+- Nama file untuk script agregasi per jam adalah aggregate_minutes_to_hourly_log.shN
+- Semua file log terletak di /home/{user}/log
+- Semua konfigurasi cron dapat ditaruh di file skrip .sh nya masing-masing dalam bentuk comment
+Berikut adalah contoh isi dari file metrics yang dijalankan tiap menit:
+mem_total,mem_used,mem_free,mem_shared,mem_buff,mem_available,swap_total,swap_used,swap_free,path,path_size 15949,10067,308,588,5573,4974,2047,43,2004,/home/user/coba/,74M
+Berikut adalah contoh isi dari file aggregasi yang dijalankan tiap jam:
+type,mem_total,mem_used,mem_free,mem_shared,mem_buff,mem_available,swap_total,swap_used,swap_free,path,path_size minimum,15949,10067,223,588,5339,4626,2047,43,1995,/home/user/coba/,50M maximum,15949,10387,308,622,5573,4974,2047,52,2004,/home/user/coba/,74M average,15949,10227,265.5,605,5456,4800,2047,47.5,1999.5,/home/user/coba/,62M
+
+## Detail Tambahan
+Tidak ada penambahan detail mengenai soal yang diberikan
+
+## Penjelasan
+
 ### SOAL 1
 a. Tampilkan nama pembeli dengan total sales paling tinggi <br />
  	`awk -F ',' 'NR == 1 { next } { if ($17 > tertinggi) { tertinggi = $17; cust = $6 } } END { print cust }' Sandbox.csv` <br />
@@ -302,6 +419,8 @@ unzip genshin.zip
 unzip genshin_character.zip
 ```
 Kita perlu mendownload file zip dari link yang sudah disediakan lalu melakukan unzip terhadap file-file yang telah didownload
+![image](https://github.com/v0rein/Sisop-1-2024-MH-IT23/assets/143814923/af25c7b3-57eb-46a5-829e-172e83b8749b)
+
 ```sh
 cd genshin_character
 ls | while read -r filename ; do
@@ -321,6 +440,9 @@ done
 ```
 Nama dari karakter-karakter yang didapat tersebut dalam kondisi ter-enkripsi dengan base64, maka dilakukan dekripsi dengan memasukkan hasil dekripsi ke variabel decrypted kemudian dilakukan rename nama ‘new file’ menjadi isi dari variabel ‘decrypted'
 Setelah mendapatkan nama asli dari setiap karakter, cek file 'list_character.csv' lalu masukkan semua item dari karakter tersebut ke variabel 'attributes', 'elements', 'regions'. Pindahkan dalam folder sesuai region dengan format Nama - Region - Elemen - Senjata
+
+![image](https://github.com/v0rein/Sisop-1-2024-MH-IT23/assets/143814923/908783da-1bc1-49af-b099-7df0b41df1e1)
+
 ```sh
 cd ..
 
@@ -333,6 +455,9 @@ done
 rm genshin_character.zip genshin.zip list_character.csv
 ```
 Lalu, lakukan penghitungan terhadap jumlah berbagai jenis senjata yang terdapat di dalam folder lalu remove file 'list_character.csv', 'genshin_character.zip', 'genshin.zip'
+
+![image](https://github.com/v0rein/Sisop-1-2024-MH-IT23/assets/143814923/f1a9dbfa-cba9-4a5b-9c47-7e70c546e4c7)
+
 ## search.sh
 ```sh
 #!/bin/bash
@@ -349,7 +474,9 @@ while true; do
       wget "$decrypted_txt"
       echo "$decrypted_txt" > decrypted_url.txt
 ```
-Lalu diperlukan script baru yaitu 'search.sh' untuk mencari clue rahasia untuk mendapatkan link gambar. Dilakukan extract dan dekripsi terhadap file-file yang terdapat di dalam 'genshin_character' dan dimasukkan link url tersebut ke dalam 'decrypted_url.txt'
+Lalu diperlukan script baru yaitu 'search.sh' untuk mencari clue rahasia untuk mendapatkan link gambar. Dilakukan extract dan dekripsi terhadap file-file yang terdapat di dalam 'genshin_character' dan dimasukkan link url tersebut ke dalam 'decrypted_url.txt' dan mendownload file .jpg yang terdapat dalam url tersebut
+![image](https://github.com/v0rein/Sisop-1-2024-MH-IT23/assets/143814923/c786db69-cd5f-4347-8c13-895bed404e4e)
+
 ```sh
       rm extracted.txt
       echo "[$waktu] [FOUND] [$file]" >> image.log
@@ -367,3 +494,13 @@ Lalu diperlukan script baru yaitu 'search.sh' untuk mencari clue rahasia untuk m
 done
 ```
 Diperlukan adanya report data ketika kita melaksanakan extract maka dibuat 'image.log' dengan format [date] [type] [image_path], lalu melakukan remove terhadap 'extracted.txt'. Lalu ketika sudah menemukan url dan sudah mendapatkan status FOUND maka script berhenti
+![image](https://github.com/v0rein/Sisop-1-2024-MH-IT23/assets/143814923/313ed20b-f750-4e34-84b2-14661ea6ee10)
+
+## REVISI
+Dikarenakan adanya kesalahan format waktu dalam file 'image.log' maka diperlukan adanya sedikit perubahan dalam variabel waktu
+```sh
+waktu=$(date "+%y/%m/%d %H:%M:%S")
+```
+![image](https://github.com/v0rein/Sisop-1-2024-MH-IT23/assets/143814923/d0ef1e08-5e1b-40de-89a0-3ac2c95ac765)
+
+
