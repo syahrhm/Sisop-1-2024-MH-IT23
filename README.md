@@ -158,134 +158,133 @@ register "$email" "$username" "$security_question" "$security_answer" "$password
 Jika di jalankan maka akan seperti ini : 
 ![Screenshot 2024-03-30 185729](https://github.com/Aceeen/Sisop-1-2024-MH-IT23/assets/151058945/faaea015-6fab-4045-88eb-b6ca7b12f4f5)
 
-## login.sh
+## Membuat menu Login
 
+1. Membuat fungsi untuk memastikan apakah user sudah tersimpan dalam sistem atau belum
+   
+ * Fungsi ini bertanggung jawab untuk memeriksa apakah pengguna dengan alamat email yang diberikan ada dalam file users.txt dan apakah kata sandi yang diberikan sesuai dengan kata sandi yang terkait dengan alamat email tersebut. Jika tidak ketemu, maka akan kembali ke menu awal
+
+```sh
 #!/bin/bash
-#Function to display the login  menu
-function show_login_menu() {
-    echo "Welcome to Login System"
-    echo "1. Login"
-    echo "2. Forgot Password"
-    read -p "Enter your choice: " choice
-    case $choice in
-        1)
-            login
-            ;;
-        2)
-            forgot_password
-            ;;
-        *)
-            echo "Invalid choice. Please select 1 or 2."
-            ;;
-    esac
-}
 
-Fungsi ini bertujuan untuk menampilkan menu login lalu memberikan pilihan untuk login atau lupa password dan akan membaca input dari pengguna untuk memilih opsi. lalu memanggil fungsi login() jika pengguna memilih untuk login, atau forgot_password() jika pengguna memilih lupa password.
-
-#Function to perform the login process
-function login() {
-    read -p "Enter email: " email
-    read -s -p "Enter password: " password
-    echo
+# Function to check if the user exists or not
+function authenticate_user() {
+    local email="$1"
+    local password="$2"
 
     # Search for the user in users.txt
-    local user_info=$(grep "^$email:" /Users/syahrhm/sisop1/users.txt)
+    local user_info=$(grep "^$email:" /home/syahrhm/sisop/mod1no2/users.txt)
 
-    # If the user is not found
+    # If not found, return to the main menu
     if [ -z "$user_info" ]; then
         echo "User with email $email not found."
-        log_message "LOGIN FAILED" "Failed login attempt on user with email $email"
-        show_login_menu
-        return
+        exit 1
     fi
-
-    # Retrieve the password info from encryption
+```
+* Lalu kode ini bertujuan untuk mengambil kata sandi terenkripsi dari informasi pengguna yang ditemukan dalam file users.txt, lalu mendekripsi kata sandi tersebut menggunakan algoritma enkripsi base64.
+  
+```sh
+    # Retrieve encrypted password information
     local encrypted_password=$(echo "$user_info" | cut -d: -f5)
 
     # Decrypt the password using base64
     local decrypted_password=$(echo "$encrypted_password" | base64 -d)
+```
 
+* Lalu kita harus memeriksa apakah kata sandi yang dimasukkan oleh pengguna saat login sesuai dengan kata sandi yang telah didekripsi dari data pengguna yang tersimpan dalam file users.txt.
+
+```sh
     # Check if the entered password matches the stored password
     if [ "$password" != "$decrypted_password" ]; then
         echo "Incorrect password."
-        log_message "LOGIN FAILED" "Failed login attempt on user with email $email"
-        show_login_menu
-        return
+        exit 1
     fi
+```
 
-    # Check if the user is an admin
+* Saat sudah ingin login, pengguna akan di cek apakah pengguna yang berhasil login adalah seorang admin atau tidak. Jika pengguna bukan seorang admin, maka akan dicetak pesan bahwa pengguna tidak memiliki izin untuk mengakses fitur tertentu, dan kemudian fungsi admin_menu akan dipanggil untuk menampilkan menu admin. Jika pengguna adalah seorang admin, pesan sukses akan dicetak, log login akan dicatat, dan fungsi admin_menu juga akan dipanggil.
+
+```sh
+    # Check if the user is an admin, if not, return
     local user_type=$(echo "$user_info" | cut -d: -f6)
     if [ "$user_type" != "admin" ]; then
-        echo "Welcome!"
-        log_message "LOGIN SUCCESS" "User $email logged in successfully"
-        return
+        echo "You do not have permission to access this feature."
+        admin_menu "$email"
+	return 0
     fi
 
     echo "Login successful!"
-    log_message "LOGIN SUCCESS" "User $email logged in successfully"
+    echo "$(date '+[%d/%m/%y %H:%M:%S]') [LOGIN SUCCESS] User $email successfully logged in." >> /home/syahrhm/sisop/mod1no2/auth.log
     admin_menu "$email"
+    exit 1
 }
-login():
+```
+2. Membuat fungsi ketika melupakan password dari pengguna
 
-Fungsi ini bertujuan untuk melakukan proses login pengguna, meminta pengguna untuk memasukkan email dan password lalu mencari informasi pengguna berdasarkan email dari file users.txt.
-Jika pengguna tidak ditemukan, maka akan ditampilkan pesan kesalahan dan memanggil kembali menu login lalu mengambil password terenkripsi dari data pengguna dan mendekripsi menggunakan base64 dan akan membandingkan password yang dimasukkan oleh pengguna dengan password yang terenkripsi.
-Jika password cocok, memeriksa apakah pengguna adalah admin atau bukan. Jika admin, memanggil admin_menu(), jika tidak, menampilkan pesan selamat datang.
+* Jadi, fungsi forgot_password digunakan untuk mencari alamat email pengguna dalam file users.txt. Jika pengguna dengan alamat email yang diberikan tidak ditemukan, maka fungsi ini akan mengembalikan nilai 1 untuk menunjukkan kegagalan.
 
-#Function to handle forgot password
+```sh
+# Function for handling forgotten passwords
 function forgot_password() {
-    read -p "Enter email: " email
-    
+    local email="$1"
+
     # Search for the user in users.txt
-    local user_info=$(grep "^$email:" /Users/syahrhm/sisop1/users.txt)
-    
-    # If the user is not found
+    local user_info=$(grep "^$email:" /home/syahrhm/sisop/mod1no2/users.txt)
+
+    # If not found, return to the main menu
     if [ -z "$user_info" ]; then
         echo "User with email $email not found."
-        log_message "LOGIN FAILED" "Failed login attempt on user with email $email"
-        show_login_menu
-        return
+        return 1
     fi
-    
-    # Retrieve security question info from data
+```
+
+* Jadi, bagian ini dari fungsi forgot_password bertanggung jawab untuk menampilkan pertanyaan keamanan kepada pengguna dan mengekstrak jawaban keamanan yang telah disimpan sebelumnya dalam data pengguna.
+
+```sh
+    # Retrieve security question information
     local security_question=$(echo "$user_info" | cut -d: -f3)
-    
-    # Prompt the user to answer the security answer
+
+    # Prompt the user to answer the security question
     read -p "Security Question: $security_question " provided_security_answer
-    
-    # Retrieve the stored security aswer from data
+
+    # Retrieve stored security answer
     local stored_security_answer=$(echo "$user_info" | cut -d: -f4)
-    
-    # Check if teh provided answer matches the stored security answer
+```
+
+* Dengan demikian, fungsi forgot_password bertindak sebagai mekanisme untuk membantu pengguna yang lupa kata sandi dengan memungkinkan mereka menjawab pertanyaan keamanan yang telah ditetapkan sebelumnya dan mereset kata sandi mereka. Jika tidak maka akan menampilkan "Incorrect answer" dan kembali ke menu awal.
+* Jika jawaban keamanannya benar, maka tampilkan kata sandi pengguna yang masih terenkripsi, kemudian dekripsi menggunakan fungsi decrypted_password dan tampilkan hasilnya.
+
+```sh
+    # Check if the provided answer matches the stored answer
     if [ "$provided_security_answer" != "$stored_security_answer" ]; then
         echo "Incorrect answer."
-        log_message "LOGIN FAILED" "Failed login attempt on user with email $email"
-        show_login_menu
-        return
+        return 1
     fi
-      
+
     # Retrieve and display the user's password
     local encrypted_password=$(echo "$user_info" | cut -d: -f5)
     local decrypted_password=$(echo "$encrypted_password" | base64 -d)
     echo "Your password is: $decrypted_password"
-    log_message "PASSWORD RECOVERY" "Password recovery for user with email $email"
-    show_login_menu
+    return 0
 }
+```
 
-Fungsi ini bertujuan untuk menangani lupa password dan akan meminta pengguna untuk memasukkan email lalu mencari informasi pengguna berdasarkan email dari file users.txt.
-Jika pengguna tidak ditemukan, menampilkan pesan kesalahan dan memanggil kembali menu login dan mengambil pertanyaan keamanan yang terkait dengan email tersebut setelah itu eminta pengguna untuk menjawab pertanyaan keamanan. Membandingkan jawaban yang diberikan dengan jawaban yang tersimpan.
-Jika jawaban benar, akan menampilkan password pengguna.
+3. Membuat menu Admin
 
-#Function to display the admin menu
+*Berikut adalah implementasi fungsi admin_menu dalam skrip Bash. Fungsi ini bertujuan untuk menampilkan menu admin yang mencakup opsi untuk menambah, mengedit, atau menghapus pengguna, serta opsi untuk logout. Pengguna akan diminta untuk memilih salah satu opsi yang tersedia menggunakan perintah case. Selama pengguna masih aktif dalam menu admin, fungsi akan terus menampilkan menu dan memproses pilihan yang dibuat pengguna. Loop akan berhenti saat pengguna telah memilih opsi logout.
+
+```sh
+# Admin menu function
 function admin_menu() {
     local email="$1"
     while true; do
+        # Display admin menu options
         echo "Admin Menu"
         echo "1. Add User"
         echo "2. Edit User"
         echo "3. Remove User"
         echo "4. Logout"
         read -p "Choose an option: " admin_option
-    
+
         case $admin_option in
             1)
                 add_user
@@ -300,21 +299,129 @@ function admin_menu() {
                 ;;
             4)
                 echo "Logging out..."
-                log_message "LOGOUT" "User $email logged out"
                 exit 0
                 ;;
             *)
                 echo "Invalid option. Please choose again."
                 ;;
         esac
-   done
+    done
 }
 
-#start the login menu
-show_login_menu
+4. Membuat fungsi dari add user, edit user, remove user
 
-Fungsi ini bertujuan untuk menampilkan menu admin setelah login lalu memberikan pilihan untuk menambahkan, mengedit, atau menghapus pengguna, serta logout dan akan membaca input dari pengguna untuk memilih opsi setelah ituemanggil fungsi yang sesuai dengan pilihan yang dibuat.
-Memanggil show_login_menu() untuk memulai proses login.
+* Fungsi add_user akan mengarahkan pengguna ke menu registrasi dengan pesan "Redirecting to the registration menu...".
+```sh
+# Function to add a new user
+function add_user() {
+    # Redirect to the registration page
+    /home/syahrhm/sisop/mod1no2/register.sh
+}
+```
+* Fungsi edit_user memungkinkan pengguna untuk mengganti username dan password pengguna yang sudah ada dalam file users.txt.
+
+```sh
+# Function to edit user information
+function edit_user() {
+    local email="$1"
+    # Input new user information and update users.txt accordingly
+    # Example: read -p "Enter new username: " new_username
+    #          sed -i "s/^$email:.*/$email:$new_username:/" /home/syahrhm/sisop/mod1no2/data/users.txt
+}
+```
+* Fungsi remove_user memungkinkan pengguna untuk menghapus pengguna yang ada dalam file users.txt. Jika pengguna dengan email yang dimasukkan ditemukan, pengguna akan dihapus dan pesan sukses akan dicetak. Jika tidak, pesan bahwa pengguna tidak ditemukan akan dicetak.
+
+```sh
+# Function to remove a user
+function remove_user() {
+    local email="$1"
+    # Remove user from users.txt
+    # Example: sed -i "/^$email:/d" /home/syahrhm/sisop/mod1no2/data/users.txt
+}
+```
+5. Main script
+
+* Keseluruhan skrip ini bertujuan untuk memandu pengguna melalui proses masuk atau pemulihan kata sandi, tergantung pada pilihan yang mereka buat. Jika pengguna memilih opsi "login", mereka akan diminta untuk memasukkan alamat email dan kata sandi mereka. Setelah itu, sistem akan menggunakan fungsi authenticate_user untuk memeriksa apakah pengguna sudah terdaftar atau belum.
+* Sementara jika pengguna memilih opsi "Forgot Password", mereka akan diminta untuk memasukkan alamat email mereka. Alamat email ini akan diproses melalui fungsi forgot_password untuk menginisiasi proses pemulihan kata sandi.
+* Ketika pengguna memilih opsi "login", mereka akan diminta untuk memasukkan alamat email dan kata sandi mereka. Setelah itu, sistem akan menggunakan fungsi authenticate_user untuk memeriksa apakah pengguna sudah terdaftar atau belum.
+* Namun, jika pengguna memilih opsi "Forgot Password", mereka akan diminta untuk memasukkan alamat email mereka. Alamat email ini akan diproses melalui fungsi forgot_password untuk memulai proses pemulihan kata sandi.
+
+```sh
+# Main script starts here
+# Prompt user for login details
+echo "Welcome to Login System"
+echo "1. Login"
+echo "2. Forgot Password"
+read -p "Enter your choice: " choice
+
+case $choice in
+    1)
+        # Login option selected
+        read -p "Enter email: " email
+        read -s -p "Enter password: " password
+        echo
+        authenticate_user "$email" "$password"
+        ;;
+    2)
+        # Forgot Password option selected
+        read -p "Enter email: " email
+        forgot_password "$email"
+        ;;
+    *)
+        echo "Invalid choice. Please select 1 or 2."
+        ;;
+esac
+```
+
+### Dokumentasi ketika menu login di jalankan
+* Menjalankan menu login dan login menggunakan user sisopmudah@gmail.com
+![Screenshot 2024-03-30 194556](https://github.com/Aceeen/Sisop-1-2024-MH-IT23/assets/151058945/bb37d376-f260-4b0f-aa64-2cb7d8ffa8cd)
+
+* Menjalankan menu login menggunakan user admin-it@gmail.com dan memilih opsi 1 yaitu Add User
+![Screenshot 2024-03-30 194635](https://github.com/Aceeen/Sisop-1-2024-MH-IT23/assets/151058945/024ab558-b2e1-4839-b9fd-c89f0e3f5907)
+
+*Memilih opsi 2 dan 3 yaitu Edit User dan Remove User
+![Screenshot 2024-03-30 194743](https://github.com/Aceeen/Sisop-1-2024-MH-IT23/assets/151058945/f13f8147-0839-4fef-b570-f42551093ea3)
+
+### REVISI
+1. Ketika login menggunakan kata 'admin', maka pengguna admin akan langsung di alihkan ke menu_admin
+![Screenshot 2024-03-30 194635](https://github.com/Aceeen/Sisop-1-2024-MH-IT23/assets/151058945/e7364f2b-3953-43c0-8cd9-1f7957b7bad6)
+
+* Berikut perubahan kode skrip untuk menampilkan menu_admin
+Sebelum revisi :
+```sh
+ # Check if the user is an admin, if not, return
+    local user_type=$(echo "$user_info" | cut -d: -f6)
+    if [ "$user_type" != "admin" ]; then
+        echo "You do not have permission to access this feature."
+        return 1
+    fi
+
+    echo "Login successful!"
+    echo "$(date '+[%d/%m/%y %H:%M:%S]') [LOGIN SUCCESS] User $email successfully logged in." >> /home/syahrhm/sisop/mod1no2/auth.log
+
+    admin_menu "$email"
+
+    return 0
+}
+```
+
+Sesudah revisi :
+```sh
+ # Check if the user is an admin, if not, return
+    local user_type=$(echo "$user_info" | cut -d: -f6)
+    if [ "$user_type" != "admin" ]; then
+        echo "You do not have permission to access this feature."
+        admin_menu "$email"
+	return 0
+    fi
+
+    echo "Login successful!"
+    echo "$(date '+[%d/%m/%y %H:%M:%S]') [LOGIN SUCCESS] User $email successfully logged in." >> /home/syahrhm/sisop/mod1no2/auth.log
+    admin_menu "$email"
+    exit 1
+}
+```
 
 ### SOAL 3
 ```sh
