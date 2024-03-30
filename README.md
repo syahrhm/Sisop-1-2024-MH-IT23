@@ -57,7 +57,8 @@ Semua registrasi dan login akan direkam ke dalam sebuah file bernama auth.log.
 ## Membuat menu Register
 
 1. Pertama - tama kita perlu membuat function untuk memeriksa apakah email yang dimasukkan telah terdaftar, mengecek apakah email tersebut sudah ada dalam file users.txt, serta mengembalikan nilai 0 jika email ditemukan, dan 1 jika tidak ditemukan.
-   
+
+```sh
 #!/bin/bash
 #Function to check if email is already registered
 function check_email() {
@@ -68,16 +69,20 @@ function check_email() {
     return 1  # Email not found
   fi
 }
+```
 
 2. Lalu, fungsi ini bertujuan untuk mengenkripsi password menggunakan base64, menerima satu parameter, yaitu password yang ingin dienkripsi, menggunakan perintah base64 untuk melakukan enkripsi.
-   
+
+```sh
 #Function to encrypt password 
 function encrypt_password() {
   echo -n "$1" | base64
 }
+```
 
 3. Membuat function untuk membuat akun baru yang dimana fungsi ini menerima beberapa argumen, yaitu alamat email, username, pertanyaan keamanan, jawaban keamanan, dan password. Variabel user_type membantu membedakan antara pengguna biasa dan pengguna admin dalam sistem.
 
+```sh
 #Function to register a new user account
 function register() {
   local email="$1"
@@ -86,16 +91,20 @@ function register() {
   local security_answer="$4"
   local password="$5"
   local user_type="user"
+```
 
 * Pernyataan if ini memeriksa apakah variabel email sama persis dengan string "admin".Jika email sama dengan "admin", maka nilai variabel user_type diubah menjadi "admin".
-   
+
+```sh
 #Check for "admin" in email and set admin flag
     if [[ "$email" == admin ]]; then
         user_type="admin"
     fi
+```
 
 * Fungsi check_email melakukan dua tugas utama: Memastikan alamat email yang diberikan memiliki format yang valid dan Mengecek apakah alamat email tersebut sudah terdaftar di dalam sistem.
 
+```sh
 #Check if email is already registered
   check_email "$email"
   if [ $? -eq 0 ]; then
@@ -103,9 +112,11 @@ function register() {
     echo "Email $email already registered." >&2
     exit 1
   fi
+```
 
 * Fungsi ini digunakan untuk memvalidasi (memeriksa kesahihan) password yang dimasukkan pengguna menggunakan loop. Validasi memastikan password memenuhi kriteria keamanan minimum untuk melindungi akun dari akses tidak sah.
-   
+
+```sh
 #Validate password 
   while true; do 
     read -s -p "Enter password: " password
@@ -117,14 +128,18 @@ function register() {
       echo "Please try again."
     fi
   done
+```
 
 * Password tersebut akan dienkripsi menggunakan function "encrypt_password" dan akan disimpan dalam variabel "encrypted_password"
-  
+
+```sh
   #Encrypt password
   local encrypted_password=$(encrypt_password "$password")
+```
 
 * Fungsi yang diberikan berfungsi untuk menulis data pengguna ke dalam file users.txt dengan menambahkan flag admin jika pengguna tersebut adalah seorang administrator. Ini juga mencatat tindakan registrasi pengguna ke dalam file auth.log dengan memberikan pesan yang sesuai.
-  
+
+```sh
   #Write user data to users.txt with admin flag
   echo "$email:$username:$security_question:$security_answer:$encrypted_password:$user_type" >> users.txt
 
@@ -136,9 +151,11 @@ function register() {
     echo "User $username registered successfully."
   fi
 }
+```
 
 4. Membuat file users.txt jika belum ada lalu meminta pengguna untuk memasukkan data registrasi, termasuk email, username, pertanyaan keamanan, jawaban keamanan, dan password.
-   
+
+```sh
 #Main script 
 #Create users.txt if it doesnt exist
 touch users.txt # add this line to create the file if it doesnt exist
@@ -149,12 +166,16 @@ read -p "Enter security question: " security_question
 read -p "Enter security answer: " security_answer
 read -sp "Password: " password
 echo
+```
 
 5. Dan akhirnya memanggil fungsi register() untuk menyelesaikan proses registrasi.
+
+```sh
 #Call the register function to complete registration
 register "$email" "$username" "$security_question" "$security_answer" "$password"
+```
 
-# Dokumentasi 
+### Dokumentasi 
 Jika di jalankan maka akan seperti ini : 
 ![Screenshot 2024-03-30 185729](https://github.com/Aceeen/Sisop-1-2024-MH-IT23/assets/151058945/faaea015-6fab-4045-88eb-b6ca7b12f4f5)
 
